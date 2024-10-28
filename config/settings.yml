@@ -36,4 +36,4 @@ discourse_subrite:
   subrite_match_by_email:
     default: true
   subrite_use_pkce:
-    default: false
+    default: true
