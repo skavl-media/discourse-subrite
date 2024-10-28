@@ -1,0 +1,12 @@
+en:
+  admin_js:
+    admin:
+      site_settings:
+        categories:
+          discourse_openid_connect: "Discourse Subrite"
+  js:
+    login:
+      oidc:
+        name: "Subrite"
+        title: "with Subrite"
+        message: "Authenticating with Subrite"
