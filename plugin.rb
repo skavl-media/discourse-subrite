@@ -8,18 +8,18 @@
 # url: https://github.com/skavl-media/discourse-subrite
 
 
-enabled_site_setting :openid_connect_enabled
+enabled_site_setting :subrite_enabled
 
 require_relative "lib/faraday_formatter"
 require_relative "lib/omniauth_subrite"
 require_relative "lib/subrite_authenticator"
 
-GlobalSetting.add_default :openid_connect_request_timeout_seconds, 10
+GlobalSetting.add_default :subrite_request_timeout_seconds, 10
 
 # RP-initiated logout
 # https://openid.net/specs/openid-connect-rpinitiated-1_0.html
 on(:before_session_destroy) do |data|
-  next if !SiteSetting.openid_connect_rp_initiated_logout
+  next if !SiteSetting.subrite_rp_initiated_logout
 
   authenticator = SubriteAuthenticator.new
 
@@ -55,7 +55,7 @@ on(:before_session_destroy) do |data|
 
   params << ["id_token_hint", token]
 
-  post_logout_redirect = SiteSetting.openid_connect_rp_initiated_logout_redirect.presence
+  post_logout_redirect = SiteSetting.subrite_rp_initiated_logout_redirect.presence
   params << ["post_logout_redirect_uri", post_logout_redirect] if post_logout_redirect
 
   uri.query = URI.encode_www_form(params)

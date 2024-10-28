@@ -8,15 +8,15 @@ class SubriteAuthenticator < Auth::ManagedAuthenticator
   end
 
   def can_revoke?
-    SiteSetting.openid_connect_allow_association_change
+    SiteSetting.subrite_allow_association_change
   end
 
   def can_connect_existing_user?
-    SiteSetting.openid_connect_allow_association_change
+    SiteSetting.subrite_allow_association_change
   end
 
   def enabled?
-    SiteSetting.openid_connect_enabled
+    SiteSetting.subrite_enabled
   end
 
   def primary_email_verified?(auth)
@@ -32,15 +32,15 @@ class SubriteAuthenticator < Auth::ManagedAuthenticator
   end
 
   def always_update_user_email?
-    SiteSetting.openid_connect_overrides_email
+    SiteSetting.subrite_overrides_email
   end
 
   def match_by_email
-    SiteSetting.openid_connect_match_by_email
+    SiteSetting.subrite_match_by_email
   end
 
   def discovery_document
-    document_url = SiteSetting.openid_connect_discovery_document.presence
+    document_url = SiteSetting.subrite_discovery_document.presence
     if !document_url
       oidc_log("No discovery document URL specified", error: true)
       return
@@ -73,17 +73,17 @@ class SubriteAuthenticator < Auth::ManagedAuthenticator
   def oidc_log(message, error: false)
     if error
       Rails.logger.error("OIDC Log: #{message}")
-    elsif SiteSetting.openid_connect_verbose_logging
+    elsif SiteSetting.subrite_verbose_logging
       Rails.logger.warn("OIDC Log: #{message}")
     end
   end
 
   def register_middleware(omniauth)
-    omniauth.provider :openid_connect,
+    omniauth.provider :subrite,
                       name: :oidc,
                       error_handler:
                         lambda { |error, message|
-                          handlers = SiteSetting.openid_connect_error_redirects.split("\n")
+                          handlers = SiteSetting.subrite_error_redirects.split("\n")
                           handlers.each do |row|
                             parts = row.split("|")
                             return parts[1] if message.include? parts[0]
@@ -98,18 +98,18 @@ class SubriteAuthenticator < Auth::ManagedAuthenticator
                           token_params = {}
                           token_params[
                             :scope
-                          ] = SiteSetting.openid_connect_token_scope if SiteSetting.openid_connect_token_scope.present?
+                          ] = SiteSetting.subrite_token_scope if SiteSetting.subrite_token_scope.present?
 
                           opts.deep_merge!(
-                            client_id: SiteSetting.openid_connect_client_id,
-                            client_secret: SiteSetting.openid_connect_client_secret,
+                            client_id: SiteSetting.subrite_client_id,
+                            client_secret: SiteSetting.subrite_client_secret,
                             discovery_document: discovery_document,
-                            scope: SiteSetting.openid_connect_authorize_scope,
+                            scope: SiteSetting.subrite_authorize_scope,
                             token_params: token_params,
                             passthrough_authorize_options:
-                              SiteSetting.openid_connect_authorize_parameters.split("|"),
-                            claims: SiteSetting.openid_connect_claims,
-                            pkce: SiteSetting.openid_connect_use_pkce,
+                              SiteSetting.subrite_authorize_parameters.split("|"),
+                            claims: SiteSetting.subrite_claims,
+                            pkce: SiteSetting.subrite_use_pkce,
                             pkce_options: {
                               code_verifier: -> { generate_code_verifier },
                               code_challenge: ->(code_verifier) do
@@ -126,7 +126,7 @@ class SubriteAuthenticator < Auth::ManagedAuthenticator
                           }
 
                           opts[:client_options][:connection_build] = lambda do |builder|
-                            if SiteSetting.openid_connect_verbose_logging
+                            if SiteSetting.subrite_verbose_logging
                               builder.response :logger,
                                                Rails.logger,
                                                { bodies: true, formatter: OIDCFaradayFormatter }
@@ -147,6 +147,6 @@ class SubriteAuthenticator < Auth::ManagedAuthenticator
   end
 
   def request_timeout_seconds
-    GlobalSetting.openid_connect_request_timeout_seconds
+    GlobalSetting.subrite_request_timeout_seconds
   end
 end

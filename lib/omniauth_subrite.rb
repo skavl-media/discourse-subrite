@@ -79,7 +79,7 @@ module ::OmniAuth
         begin
           discover! if options[:discovery]
         rescue ::OmniAuth::Subrite::DiscoveryError => e
-          return fail!(:openid_connect_discovery_error, e)
+          return fail!(:subrite_discovery_error, e)
         end
 
         super
@@ -132,13 +132,13 @@ module ::OmniAuth
 
           oauth2_callback_phase
         rescue ::OmniAuth::Subrite::DiscoveryError => e
-          fail!(:openid_connect_discovery_error, e)
+          fail!(:subrite_discovery_error, e)
         rescue ::JWT::DecodeError => e
           fail!(:jwt_decode_failed, e)
         rescue NonceVerifyError => e
           fail!(:jwt_nonce_verify_failed, e)
         rescue SubVerifyError => e
-          fail!(:openid_connect_sub_mismatch, e)
+          fail!(:subrite_sub_mismatch, e)
         end
       end
 

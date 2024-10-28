@@ -1,39 +1,39 @@
-discourse_openid_connect:
-  openid_connect_enabled:
+discourse_subrite:
+  subrite_enabled:
     default: false
-  openid_connect_discovery_document:
+  subrite_discovery_document:
     default: ""
-  openid_connect_client_id:
+  subrite_client_id:
     default: ""
-  openid_connect_client_secret:
+  subrite_client_secret:
     default: ""
     secret: true
-  openid_connect_rp_initiated_logout:
+  subrite_rp_initiated_logout:
     default: false
-  openid_connect_rp_initiated_logout_redirect:
+  subrite_rp_initiated_logout_redirect:
     default: ""
-  openid_connect_allow_association_change:
+  subrite_allow_association_change:
     default: false
-  openid_connect_overrides_email:
+  subrite_overrides_email:
+    default: true
+  subrite_authorize_scope:
+    default: "openid email profile offline_access"
+  subrite_verbose_logging:
     default: false
-  openid_connect_authorize_scope:
-    default: "openid"
-  openid_connect_verbose_logging:
-    default: false
-  openid_connect_token_scope:
+  subrite_token_scope:
     default: ""
-  openid_connect_error_redirects:
+  subrite_error_redirects:
     default: ""
     type: list
     list_type: secret
-  openid_connect_authorize_parameters:
+  subrite_authorize_parameters:
     default: ""
     type: list
     list_type: compact
-  openid_connect_claims:
+  subrite_claims:
     default: ""
     textarea: true
-  openid_connect_match_by_email:
+  subrite_match_by_email:
     default: true
-  openid_connect_use_pkce:
+  subrite_use_pkce:
     default: false

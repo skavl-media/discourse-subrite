@@ -3,7 +3,7 @@ en:
     admin:
       site_settings:
         categories:
-          discourse_openid_connect: "Discourse Subrite"
+          discourse_subrite: "Discourse Subrite"
   js:
     login:
       oidc:
