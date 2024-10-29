@@ -235,7 +235,7 @@ module ::OmniAuth
         hash[:raw_info] = options.use_userinfo ? userinfo_response : id_token_info
         hash[:id_token] = access_token["id_token"]
         hash[:user_type] = member_info["userType"]
-        hash[:subscriptions] = member_info["subscriptions"]
+        hash[:subscriptions] = member_info["subscriptions"] || []
         prune! hash
       end
 
