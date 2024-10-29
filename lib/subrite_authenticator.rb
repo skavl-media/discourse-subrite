@@ -20,15 +20,7 @@ class SubriteAuthenticator < Auth::ManagedAuthenticator
   end
 
   def primary_email_verified?(auth)
-    supplied_verified_boolean = auth["extra"]["raw_info"]["email_verified"]
-    # If the payload includes the email_verified boolean, use it. Otherwise assume true
-    if supplied_verified_boolean.nil?
-      true
-    else
-      # Many providers violate the spec, and send this as a string rather than a boolean
-      supplied_verified_boolean == true ||
-        (supplied_verified_boolean.is_a?(String) && supplied_verified_boolean.downcase == "true")
-    end
+    true # We trust the OIDC provider
   end
 
   def always_update_user_email?

@@ -37,3 +37,5 @@ discourse_subrite:
     default: true
   subrite_use_pkce:
     default: true
+  subrite_api_endpoint:
+    default: "https://api.subrite.no"

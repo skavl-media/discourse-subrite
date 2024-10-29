@@ -175,6 +175,7 @@ module ::OmniAuth
       end
 
       def userinfo_response
+
         @raw_info ||=
           begin
             info = access_token.get(options[:client_options][:userinfo_endpoint]).parsed
@@ -194,6 +195,28 @@ module ::OmniAuth
 
       uid { id_token_info["sub"] }
 
+      def member_info
+        token = access_token.token
+
+        member_info = Discourse.cache.read(token)
+
+        if member_info
+          return member_info
+        end
+
+        response = Faraday.get("#{SiteSetting.subrite_api_endpoint}/api/v1/members/profile/info-with-active-subscriptions") do |req|
+                    req.headers['Authorization'] = "Bearer #{token}"
+                    req.headers['Accept'] = 'application/json'
+                    req.headers['Content-Type'] = 'application/json'
+                  end
+
+        full_info = JSON.parse(response.body)
+
+        Discourse.cache.write(token, full_info, expires_in: 2.minutes)
+
+        full_info
+      end
+
       info do
         data_source = options.use_userinfo ? userinfo_response : id_token_info
         prune!(
@@ -202,7 +225,8 @@ module ::OmniAuth
           first_name: data_source["given_name"],
           last_name: data_source["family_name"],
           nickname: data_source["preferred_username"],
-          image: data_source["picture"],
+          image: member_info["avatar"],
+          phone: member_info["phone"]
         )
       end
 
@@ -210,6 +234,8 @@ module ::OmniAuth
         hash = {}
         hash[:raw_info] = options.use_userinfo ? userinfo_response : id_token_info
         hash[:id_token] = access_token["id_token"]
+        hash[:user_type] = member_info["userType"]
+        hash[:subscriptions] = member_info["subscriptions"]
         prune! hash
       end
 

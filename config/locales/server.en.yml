@@ -16,6 +16,7 @@ en:
     subrite_claims: "Explicitly define the claims for use with providers that don't pass data back based on scopes. (JSON)"
     subrite_match_by_email: "Use email address to match subrite authentications to existing Discourse user accounts."
     subrite_use_pkce: "Enable Proof Key for Code Exchange (PKCE) for subrite authentication."
+    subrite_api_endpoint: "The endpoint to use for API requests. This must be set."
   login:
     omniauth_error:
       subrite_discovery_error: Unable to fetch configuration from identity provider. Please try again.
