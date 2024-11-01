@@ -23,7 +23,7 @@ on(:before_session_destroy) do |data|
 
   authenticator = SubriteAuthenticator.new
 
-  oidc_record = data[:user]&.user_associated_accounts&.find_by(provider_name: "oidc")
+  oidc_record = data[:user]&.user_associated_accounts&.find_by(provider_name: "subrite")
   if !oidc_record
     authenticator.oidc_log "Logout: No oidc user_associated_account record for user"
     next

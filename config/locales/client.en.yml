@@ -6,7 +6,7 @@ en:
           discourse_subrite: "Discourse Subrite"
   js:
     login:
-      oidc:
+      subrite:
         name: "Subrite"
-        title: "with Subrite"
+        title: "Subrite"
         message: "Authenticating with Subrite"

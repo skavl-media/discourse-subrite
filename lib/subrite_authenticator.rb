@@ -4,7 +4,7 @@ require "openssl"
 
 class SubriteAuthenticator < Auth::ManagedAuthenticator
   def name
-    "oidc"
+    "subrite"
   end
 
   def can_revoke?
@@ -70,9 +70,40 @@ class SubriteAuthenticator < Auth::ManagedAuthenticator
     end
   end
 
+  def after_authenticate(auth_token, existing_account: nil)
+
+    associated_group = []
+
+    if auth_token.extra[:user_type]
+      associated_group.push({ id: "1", name: auth_token.extra[:user_type] })
+    end
+
+    if auth_token.extra[:subscriptions]
+      has_one = auth_token.extra[:subscriptions].find { |sub| sub["status"] == "active" }
+      if has_one
+        associated_group.push({ id: "2", name: "subscriber" })
+      end
+    end
+
+    groups = provides_groups? ? associated_group : nil
+
+    auth_token.extra[:raw_groups] = groups if groups
+
+    # puts "auth_token_ex: #{auth_token.to_json}"
+
+    result = super
+
+    if groups
+      result.associated_groups =
+        groups.map { |group| group.with_indifferent_access.slice(:id, :name) }
+    end
+
+    result
+  end
+
   def register_middleware(omniauth)
     omniauth.provider :subrite,
-                      name: :oidc,
+                      name: :subrite,
                       error_handler:
                         lambda { |error, message|
                           handlers = SiteSetting.subrite_error_redirects.split("\n")
@@ -140,5 +171,9 @@ class SubriteAuthenticator < Auth::ManagedAuthenticator
 
   def request_timeout_seconds
     GlobalSetting.subrite_request_timeout_seconds
+  end
+
+  def provides_groups?
+    true
   end
 end
