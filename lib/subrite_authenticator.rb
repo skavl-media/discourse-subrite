@@ -71,19 +71,24 @@ class SubriteAuthenticator < Auth::ManagedAuthenticator
   end
 
   def after_authenticate(auth_token, existing_account: nil)
-
     associated_group = []
 
-    if auth_token.extra[:user_type]
-      associated_group.push({ id: "80", name: auth_token.extra[:user_type] })
+    user_type = auth_token.extra[:user_type]
+    subscriptions = auth_token.extra[:subscriptions]
+
+    if user_type
+      group_id = case user_type
+                when "member" then "80"
+                when "tenant_admin" then "81"
+                when "system_admin" then "82"
+                end
+      associated_group << { id: group_id, name: user_type } if group_id
     end
 
-    if auth_token.extra[:subscriptions]
-      has_one = auth_token.extra[:subscriptions].find { |sub| sub["status"] == "active" }
-      if has_one
-        associated_group.push({ id: "82", name: "subscriber" })
-      end
+    if subscriptions&.any? { |sub| sub["status"] == "active" }
+      associated_group << { id: "82", name: "subscriber" }
     end
+
 
     groups = provides_groups? ? associated_group : nil
 
