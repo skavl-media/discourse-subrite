@@ -220,6 +220,7 @@ module ::OmniAuth
       info do
         data_source = options.use_userinfo ? userinfo_response : id_token_info
         prune!(
+          member_id: member_info["id"],
           name: data_source["name"],
           email: data_source["email"],
           first_name: data_source["given_name"],

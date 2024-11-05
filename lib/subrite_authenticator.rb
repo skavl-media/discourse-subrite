@@ -75,13 +75,13 @@ class SubriteAuthenticator < Auth::ManagedAuthenticator
     associated_group = []
 
     if auth_token.extra[:user_type]
-      associated_group.push({ id: "1", name: auth_token.extra[:user_type] })
+      associated_group.push({ id: "80", name: auth_token.extra[:user_type] })
     end
 
     if auth_token.extra[:subscriptions]
       has_one = auth_token.extra[:subscriptions].find { |sub| sub["status"] == "active" }
       if has_one
-        associated_group.push({ id: "2", name: "subscriber" })
+        associated_group.push({ id: "82", name: "subscriber" })
       end
     end
 
